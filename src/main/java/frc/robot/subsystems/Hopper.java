@@ -18,7 +18,7 @@ public class Hopper extends SubsystemBase {
 
 //IDS TO BE CHANGED LATER
 
-private SparkMax primaryMotor = new SparkMax (3, MotorType.kBrushless);
+private SparkMax leaderMotor = new SparkMax (3, MotorType.kBrushless);
 private Sit parkMax followerMotor = new SparkMax (4, MotorType.kBrushless);
 
 boolean motorsConfigured = false;
@@ -31,37 +31,37 @@ if (!motorsConfigured){
 }
 
   }
-SparkMaxConfig primaryConfig = new SparkMaxConfig();
+SparkMaxConfig leaderConfig = new SparkMaxConfig();
 
 
   @SuppressWarnings("removal")
   private void configureMotors(){
 
 
-primaryConfig.smartCurrentLimit(40);
-primaryConfig.voltageCompensation(12.0);
-primaryConfig.idleMode(IdleMode.kBrake);
+leaderConfig.smartCurrentLimit(40);
+leaderConfig.voltageCompensation(12.0);
+leaderConfig.idleMode(IdleMode.kBrake);
 
-primaryMotor.configure(primaryConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+leaderMotor.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 SparkMaxConfig followerConfig = new SparkMaxConfig();
 
 
-followerMotor.follow(primaryMotor);
+followerMotor.follow(leaderMotor);
 followerMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
 
   }
 
   public void agitatorForward() {
-primaryMotor.set(0.3);
+leaderMotor.set(0.3);
   }
 
   public void agitatorBackward() {
-primaryMotor.set(-0.3);
+leaderMotor.set(-0.3);
   }
 
   public void agitatorStop() {
-primaryMotor.set(0);
+leaderMotor.set(0);
   }
 
   @Override

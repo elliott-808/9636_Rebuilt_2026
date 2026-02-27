@@ -34,7 +34,6 @@ if (!motorsConfigured){
 SparkMaxConfig leaderConfig = new SparkMaxConfig();
 
 
-  @SuppressWarnings("removal")
   private void configureMotors(){
 
 
@@ -42,13 +41,13 @@ leaderConfig.smartCurrentLimit(40);
 leaderConfig.voltageCompensation(12.0);
 leaderConfig.idleMode(IdleMode.kBrake);
 
-leaderMotor.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+leaderMotor.configure(leaderConfig, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
 
 SparkMaxConfig followerConfig = new SparkMaxConfig();
 
 
 followerMotor.follow(leaderMotor);
-followerMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
+followerMotor.configure(followerConfig, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters); 
 
   }
 

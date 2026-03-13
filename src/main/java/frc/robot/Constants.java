@@ -16,4 +16,27 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+public static final double countsPerInch = 0;
+public static final double extenderPIDLoopTime = 0;
+public static final double extenderkP = 0;
+public static final double extenderkI = 0;
+public static final double extenderkD = 0;
+public static final double extenderkS = 0;
+public static final double extenderkG = 0;
+public static final int extenderMax = 0;
+
+
+public static final int kFlywheelMotorCanId = 0;
+public static final int kFlywheelFollowerMotorCanId = 0;
+public static final int kFeederMotorCanId = 0;
+public static final double kVelocityTolerance = 0;
+public static final double kShootRpm = 0;
+public static final double kFeed = 0;
+public static final double kWheelDiameterMeters = 0;
+public static final double kDrivingMotorReduction = 0;
+public static final double kDriveWheelFreeSpeedRps = 0;
+public static final double kVortexKv = 0;
+public static final double extendOutValue = 0;
+public static final double extendInValue = 0;
 }

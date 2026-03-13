@@ -5,29 +5,41 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Extender;
+import frc.robot.Constants;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+// fuck elevators, all my homies hate elevators.
 public class ExtenderBackward extends Command {
-  /** Creates a new ExtenderBackward. */
-  public ExtenderBackward() {
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
+    public final Extender extenderGoBackward;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    public ExtenderBackward(Extender extenderCommand) {
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
+        extenderGoBackward = extenderCommand;
+        addRequirements(extenderCommand);
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    @Override
+    public void initialize() {
+        // At the beginning we set te height to whatever height we have in the Constants.java file
+        extenderGoBackward.setPositionInches(Constants.extendInValue);
+        System.out.println("Extender moving backward...");
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    }
+
+    @Override
+    public void execute() {
+
+
+    }
+
+    @Override
+    public boolean isFinished() {
+        return extenderGoBackward.isExtendedTo(Constants.extendInValue);
+        //here, we dont have "return false;" but instead wether or not the elevator is at the height.
+    }
+  
+    @Override
+    public void end(boolean interrupted) {
+      
+    }
 }

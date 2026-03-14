@@ -35,9 +35,9 @@ public static final double extenderkG = 0;
 public static final int extenderMax = 0;
 
 
-public static final int kFlywheelMotorCanId = 0;
-public static final int kFlywheelFollowerMotorCanId = 0;
-public static final int kFeederMotorCanId = 0;
+public static final int kFlywheelMotorCanId = 6;
+public static final int kFlywheelFollowerMotorCanId = 7;
+public static final int kFeederMotorCanId = 8;
 public static final double kVelocityTolerance = 0;
 public static final double kShootRpm = 0;
 public static final double kFeed = 0;

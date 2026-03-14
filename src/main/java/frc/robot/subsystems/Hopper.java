@@ -46,7 +46,7 @@ leaderMotor.configure(leaderConfig, com.revrobotics.ResetMode.kResetSafeParamete
 SparkMaxConfig followerConfig = new SparkMaxConfig();
 
 
-followerMotor.follow(leaderMotor);
+followerConfig.follow(leaderMotor);
 followerMotor.configure(followerConfig, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters); 
 
   }

@@ -5,10 +5,36 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.AgitatorBackward;
+import frc.robot.commands.AgitatorForward;
+import frc.robot.commands.ClimberDown;
+import frc.robot.commands.ExtenderBackward;
+import frc.robot.commands.ExtenderForward;
+import frc.robot.commands.IntakeIn;
+import frc.robot.commands.IntakeOut;
+import frc.robot.commands.ShooterLaunch;
+import frc.robot.subsystems.Agitator;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Extender;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import swervelib.SwerveInputStream;
+
+import java.io.File;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -20,16 +46,35 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Agitator agitator = new Agitator();
+  private final Climber climber = new Climber();
+  private final Extender extender = new Extender();
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  final CommandPS4Controller driverPS4 = new CommandPS4Controller(0);
+  final CommandPS4Controller operatorPS4 = new CommandPS4Controller(1);
 
+  public static final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+                                                                                "swerve"));
+
+  SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                                                                () -> driverPS4.getLeftY() * -1,
+                                                                () -> driverPS4.getLeftX() * -1)
+                                                            .withControllerRotationAxis(driverPS4::getRightX)
+                                                            .deadband(OperatorConstants.DEADBAND)
+                                                            .scaleTranslation(0.8)
+                                                            .allianceRelativeControl(true);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     // Configure the trigger bindings
     configureBindings();
+    DriverStation.silenceJoystickConnectionWarning(true);
+     
+
   }
 
   /**
@@ -42,13 +87,23 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+
+        Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+      operatorPS4.R1().whileTrue(new AgitatorForward(agitator));
+      operatorPS4.L1().whileTrue(new AgitatorBackward(agitator));
+      operatorPS4.R2().whileTrue(new ExtenderForward(extender));
+      operatorPS4.L2().whileTrue(new ExtenderBackward(extender));
+
+      operatorPS4.triangle().onTrue(new IntakeIn(intake));
+      operatorPS4.circle().onTrue(new IntakeOut(intake));
+      operatorPS4.cross().onTrue(new ClimberDown(climber));
+      operatorPS4.square().onTrue(new ShooterLaunch(shooter));
   }
 
   /**
@@ -56,8 +111,14 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  //public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    //return Autos.exampleAuto(m_exampleSubsystem);
+  //}
+  
+
+    public void setMotorBrake(boolean brake){
+    drivebase.setMotorBrake(brake);
   }
+
 }

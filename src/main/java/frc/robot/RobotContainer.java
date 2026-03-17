@@ -96,8 +96,8 @@ public class RobotContainer {
     // cancelling on release.
 
       operatorPS4.R1().whileTrue(new AgitatorForward(agitator));
-      operatorPS4.L1().whileTrue(new AgitatorBackward(agitator));
-      operatorPS4.R2().whileTrue(new ExtenderForward(extender));
+      operatorPS4.R2().whileTrue(new AgitatorBackward(agitator));
+      operatorPS4.L1().whileTrue(new ExtenderForward(extender));
       operatorPS4.L2().whileTrue(new ExtenderBackward(extender));
 
       operatorPS4.triangle().onTrue(new IntakeIn(intake));

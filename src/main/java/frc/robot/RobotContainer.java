@@ -102,10 +102,10 @@ public class RobotContainer {
       operatorPS4.L2().whileTrue(new ExtenderBackward(extender));
 
       operatorPS4.triangle().onTrue(new IntakeIn(intake));
-      operatorPS4.circle().onTrue(new IntakeOut(intake));
-      operatorPS4.square().onTrue(new ShooterLaunch(shooter));
-      operatorPS4.cross().whileTrue(new ClimberDown(climber));
-      operatorPS4.options().onTrue(new ClimberUp(climber));
+      operatorPS4.square().onTrue(new IntakeOut(intake));
+      operatorPS4.circle().onTrue(new ShooterLaunch(shooter));
+      operatorPS4.povDown().whileTrue(new ClimberDown(climber));
+      operatorPS4.povUp().onTrue(new ClimberUp(climber));
 
   }
 

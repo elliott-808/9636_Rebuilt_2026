@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AgitatorBackward;
 import frc.robot.commands.AgitatorForward;
 import frc.robot.commands.ClimberDown;
+import frc.robot.commands.ClimberUp;
 import frc.robot.commands.ExtenderBackward;
 import frc.robot.commands.ExtenderForward;
 import frc.robot.commands.IntakeIn;
@@ -102,8 +103,10 @@ public class RobotContainer {
 
       operatorPS4.triangle().onTrue(new IntakeIn(intake));
       operatorPS4.circle().onTrue(new IntakeOut(intake));
-      operatorPS4.cross().onTrue(new ClimberDown(climber));
       operatorPS4.square().onTrue(new ShooterLaunch(shooter));
+      operatorPS4.cross().onTrue(new ClimberDown(climber));
+      operatorPS4.options().onTrue(new ClimberUp(climber));
+
   }
 
   /**

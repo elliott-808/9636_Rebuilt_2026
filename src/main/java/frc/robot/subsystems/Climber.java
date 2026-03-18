@@ -26,8 +26,10 @@ public class Climber extends SubsystemBase {
   private SparkLimitSwitch forwardLimitSwitch;
   //private SparkLimitSwitch reverseLimitSwitch;
   private RelativeEncoder encoder;
-
+    
   public Climber() {
+      climberConfig.idleMode(IdleMode.kBrake);
+
 climberMotor = new SparkFlex(9, MotorType.kBrushless);
     forwardLimitSwitch = climberMotor.getForwardLimitSwitch();
    // reverseLimitSwitch = climberMotor.getReverseLimitSwitch();
@@ -75,6 +77,11 @@ climberMotor = new SparkFlex(9, MotorType.kBrushless);
     SmartDashboard.setDefaultBoolean("Direction", true);
 
   
+  }
+
+  public void climberUp(){
+climberConfig.idleMode(IdleMode.kCoast);
+
   }
 
   public void climberDown() {

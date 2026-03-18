@@ -96,15 +96,15 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-      operatorPS4.R1().whileTrue(new AgitatorForward(agitator));
-      operatorPS4.R2().whileTrue(new AgitatorBackward(agitator));
+      operatorPS4.R1().onTrue(new AgitatorForward(agitator));
+      operatorPS4.R2().onTrue(new AgitatorBackward(agitator));
       operatorPS4.L1().whileTrue(new ExtenderForward(extender));
       operatorPS4.L2().whileTrue(new ExtenderBackward(extender));
 
       operatorPS4.triangle().onTrue(new IntakeIn(intake));
       operatorPS4.circle().onTrue(new IntakeOut(intake));
       operatorPS4.square().onTrue(new ShooterLaunch(shooter));
-      operatorPS4.cross().onTrue(new ClimberDown(climber));
+      operatorPS4.cross().whileTrue(new ClimberDown(climber));
       operatorPS4.options().onTrue(new ClimberUp(climber));
 
   }

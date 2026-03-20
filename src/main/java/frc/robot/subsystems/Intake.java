@@ -16,7 +16,7 @@ public class Intake extends SubsystemBase {
 //IDS TO BE CHANGED LATER
 
 private SparkFlex leaderMotor = new SparkFlex (1, MotorType.kBrushless);
-private SparkFlex followerMotor = new SparkFlex (2, MotorType.kBrushless);
+//private SparkFlex followerMotor = new SparkFlex (2, MotorType.kBrushless);
 
 boolean motorsConfigured = false;
 
@@ -40,11 +40,11 @@ leaderConfig.idleMode(IdleMode.kBrake);
 
 leaderMotor.configure(leaderConfig, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
 
-SparkFlexConfig followerConfig = new SparkFlexConfig();
+//SparkFlexConfig followerConfig = new SparkFlexConfig();
 
 
-followerConfig.follow(leaderMotor);
-followerMotor.configure(followerConfig, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters); 
+//followerConfig.follow(leaderMotor);
+//followerMotor.configure(followerConfig, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters); 
 
   }
 

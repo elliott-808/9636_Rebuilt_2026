@@ -8,9 +8,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Extender extends SubsystemBase {
-    private SparkMax extendMotor = new SparkMax(3, MotorType.kBrushless);
+    private SparkFlex extendMotor = new SparkFlex(3, MotorType.kBrushless);
     // this is for the relative encoder that is built into the brushless motor. it gives the rotational position of it.
     private RelativeEncoder encoder = extendMotor.getEncoder();
 
@@ -48,7 +48,7 @@ public class Extender extends SubsystemBase {
     private ExtenderPosition currentTarget = ExtenderPosition.IN;
     private boolean isHomed = false;
     public static double setpoint = 0.0;
-    SparkMaxConfig extendConfig = new SparkMaxConfig();
+    SparkFlexConfig extendConfig = new SparkFlexConfig();
     double currentPos;
 
 

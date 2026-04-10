@@ -13,7 +13,8 @@ import frc.robot.commands.ExtenderBackward;
 import frc.robot.commands.ExtenderForward;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeOut;
-import frc.robot.commands.ShooterLaunch;
+import frc.robot.commands.FarShooterCammand;
+import frc.robot.commands.CloseShooterCommand;
 import frc.robot.subsystems.Agitator;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Extender;
@@ -103,8 +104,8 @@ public class RobotContainer {
 
       operatorPS4.triangle().onTrue(new IntakeIn(intake));
       operatorPS4.square().onTrue(new IntakeOut(intake));
-      operatorPS4.circle().onTrue(new ShooterLaunch(shooter));
-      operatorPS4.povDown().whileTrue(new ClimberDown(climber));
+      operatorPS4.circle().onTrue(new FarShooterCammand(shooter));
+      operatorPS4.povDown().onTrue(new CloseShooterCommand(shooter));
       operatorPS4.povUp().onTrue(new ClimberUp(climber));
 
   }

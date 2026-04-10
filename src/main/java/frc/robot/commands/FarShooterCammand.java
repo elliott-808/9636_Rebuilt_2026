@@ -6,13 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShooterLaunch extends Command {
+public class FarShooterCammand extends Command {
   public final Shooter fuelLaunch;
 
     // This defines what subsystem is being changed or moved.
-    public ShooterLaunch(Shooter shooterCommand) {
+    public FarShooterCammand(Shooter shooterCommand) {
         
         fuelLaunch = shooterCommand;
         addRequirements(shooterCommand);
@@ -23,8 +24,9 @@ public class ShooterLaunch extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+      fuelLaunch.runFarShooterCommand();
+      new WaitCommand(2);
       fuelLaunch.runFeederCommand();
-      fuelLaunch.runShooterCommand();
 
   }
   // Called every time the scheduler runs while the command is scheduled.

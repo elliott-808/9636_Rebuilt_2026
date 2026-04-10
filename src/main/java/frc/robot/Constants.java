@@ -35,12 +35,12 @@ public static final double extenderkG = 0;
 public static final int extenderMax = 0;
 
 
-public static final int kFlywheelMotorCanId = 6;
-public static final int kFlywheelFollowerMotorCanId = 7;
+public static final int kFlywheelMotorCanId = 43;
+public static final int kFlywheelFollowerMotorCanId = 53;
 public static final int kFeederMotorCanId = 8;
-public static final double kVelocityTolerance = 0;
-public static final double kShootRpm = 0;
-public static final double kFeed = 0;
+public static final double kVelocityTolerance = -3000;
+public static final double kShootRpm = -3500;
+public static final double kFeed = 0.95;
 public static final double kWheelDiameterMeters = 0;
 public static final double kDrivingMotorReduction = 0;
 public static final double kDriveWheelFreeSpeedRps = 0;
@@ -53,6 +53,7 @@ public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg p
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
   // Maximum speed of the robot in meters per second, used to limit acceleration.
+  public static final double kCloseShootRpm = -2000;
 
 //  public static final class AutonConstants
 //  {

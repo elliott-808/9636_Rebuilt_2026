@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -39,9 +40,11 @@ public final class Configs {
        */
       flywheelConfig
         .closedLoop
-          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+
           // Set PID values for position control
           .p(0.0002)
+          .i(0.0)
+          .d(0.0)
           .outputRange(-1, 1);
 
       flywheelConfig.closedLoop
@@ -49,7 +52,7 @@ public final class Configs {
           // Set MAXMotion parameters for MAXMotion Velocity control
           .cruiseVelocity(5000)
           .maxAcceleration(10000)
-          .allowedProfileError(1);
+          .allowedProfileError(1.0);
 
       // Constants.NeoMotorConstants.kVortexKv is in rpm/V. feedforward.kV is in V/rpm sort we take
       // the reciprocol.

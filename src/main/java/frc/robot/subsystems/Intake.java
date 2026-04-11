@@ -15,7 +15,7 @@ public class Intake extends SubsystemBase {
 
 //IDS TO BE CHANGED LATER
 
-private SparkFlex leaderMotor = new SparkFlex (1, MotorType.kBrushless);
+private SparkFlex leaderMotor = new SparkFlex (15, MotorType.kBrushless);
 //private SparkFlex followerMotor = new SparkFlex (2, MotorType.kBrushless);
 
 boolean motorsConfigured = false;

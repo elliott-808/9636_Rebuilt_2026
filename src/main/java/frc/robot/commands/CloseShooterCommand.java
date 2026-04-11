@@ -25,8 +25,6 @@ public class CloseShooterCommand extends Command {
   @Override
   public void initialize() {
       fuelLaunch.runCloseShooterCommand();
-      new WaitCommand(2);
-      fuelLaunch.runFeederCommand();
 
   }
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,7 +34,7 @@ public class CloseShooterCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-        System.out.println("ShooterLaunch activated");
+        System.out.println("closeshoot activated");
   }
   // Returns true when the command should end.
   @Override

@@ -11,9 +11,11 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,7 +31,7 @@ public class Shooter extends SubsystemBase {
       new SparkFlex(Constants.kFlywheelMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController flywheelController = flywheelMotor.getClosedLoopController();
   private RelativeEncoder flywheelEncoder = flywheelMotor.getEncoder();
-
+private PIDController flywheelcontroller = new PIDController(.002, 0, 0);
   private SparkFlex flywheelFollowerMotor = 
       new SparkFlex(Constants.kFlywheelFollowerMotorCanId, MotorType.kBrushless);
 
@@ -38,8 +40,10 @@ public class Shooter extends SubsystemBase {
   private SparkMax feederMotor = 
       new SparkMax(Constants.kFeederMotorCanId, MotorType.kBrushless);
 
+
+
   // Member variables for subsystem state management
-  private double flywheelTargetVelocity = -3500;
+  private double flywheelTargetVelocity = 0;
 
   /** Creates a new ShooterSubsystem. */
   public Shooter() {
@@ -53,10 +57,12 @@ public class Shooter extends SubsystemBase {
      * the SPARK loses power. This is useful for power cycles that may occur
      * mid-operation.
      */
+
     flywheelMotor.configure(
         Configs.Shooter.flywheelConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+        
     flywheelFollowerMotor.configure(
         Configs.Shooter.flywheelFollowerConfig,
         ResetMode.kResetSafeParameters,
@@ -68,24 +74,25 @@ public class Shooter extends SubsystemBase {
 
     // Zero flywheel encoder on initialization
     flywheelEncoder.setPosition(0);
+    
 
     System.out.println("---> Shooter initialized");
   }
 
   private boolean isFlywheelAt(double velocity) {
     return MathUtil.isNear(flywheelEncoder.getVelocity(), 
-            velocity, Constants.kVelocityTolerance);
+            velocity, -1.0*Constants.kVelocityTolerance);
   }
 
   /** 
    * Trigger: Is the flywheel spinning at the required velocity?
    */
   public final Trigger isFlywheelSpinning = new Trigger(
-      () -> isFlywheelAt(6000) || flywheelEncoder.getVelocity() > 6000
+      () -> isFlywheelAt(1500) || Math.abs(flywheelEncoder.getVelocity()) > 1500
   );
 
   public final Trigger isFlywheelSpinningBackwards = new Trigger(
-      () -> isFlywheelAt(-6000) || flywheelEncoder.getVelocity() < -6000
+      () -> isFlywheelAt(-1500) || flywheelEncoder.getVelocity() < -1500
   );
 
   /** 
@@ -99,7 +106,7 @@ public class Shooter extends SubsystemBase {
    * setpoint.
    */
   private void setFlywheelVelocity(double velocity) {
-    flywheelController.setSetpoint(velocity, ControlType.kMAXMotionVelocityControl);
+    // flywheelController.setVoltage(velocity, ControlType.kMAXMotionVelocityControl);
     flywheelTargetVelocity = velocity;
   }
 
@@ -159,14 +166,14 @@ public class Shooter extends SubsystemBase {
   public Command runFarShooterCommand() {
     return this.startEnd(
       () -> this.setFlywheelVelocity(Constants.kShootRpm),
-      () -> flywheelMotor.stopMotor()
+      () -> {this.setFlywheelVelocity(0); System.out.println("stop");}
     ).until(isFlywheelSpinning).andThen(
       this.startEnd(
         () -> {
           this.setFlywheelVelocity(Constants.kShootRpm);
           this.setFeederPower(Constants.kFeed);
         }, () -> {
-          flywheelMotor.stopMotor();
+          this.setFlywheelVelocity(0);
           feederMotor.stopMotor();
         })
     ).withName("Shooting");
@@ -187,6 +194,8 @@ public class Shooter extends SubsystemBase {
         })
     ).withName("Shooting");}
 
+    
+
   @Override
   public void periodic() {
     // Display subsystem values
@@ -201,6 +210,14 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putBoolean("Is Flywheel Spinning", isFlywheelSpinning.getAsBoolean());
     SmartDashboard.putBoolean("Is Flywheel Stopped", isFlywheelStopped.getAsBoolean());
+  //  System.out.println("encoder velocity " + flywheelEncoder.getVelocity());
+if (flywheelTargetVelocity == 0) {
+  flywheelMotor.setVoltage(0);
+}
+else{
+flywheelMotor.setVoltage(flywheelcontroller.calculate(flywheelEncoder.getVelocity(), flywheelTargetVelocity));
+
   }
 
+}
 }

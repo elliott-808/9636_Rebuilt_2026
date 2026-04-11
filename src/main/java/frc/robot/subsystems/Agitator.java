@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -15,8 +17,8 @@ public class Agitator extends SubsystemBase {
 
 //IDS TO BE CHANGED LATER
 
-private SparkMax leaderMotor = new SparkMax (4, MotorType.kBrushless);
-private SparkMax followerMotor = new SparkMax (5, MotorType.kBrushless);
+public static SparkMax leaderMotor = new SparkMax (10, MotorType.kBrushless);
+private SparkMax followerMotor = new SparkMax (9, MotorType.kBrushless);
 
 boolean motorsConfigured = false;
 
@@ -43,7 +45,7 @@ leaderMotor.configure(leaderConfig, com.revrobotics.ResetMode.kResetSafeParamete
 SparkMaxConfig followerConfig = new SparkMaxConfig();
 
 
-followerConfig.follow(leaderMotor);
+followerConfig.follow(leaderMotor, true);
 followerMotor.configure(followerConfig, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters); 
 
   }
@@ -63,5 +65,10 @@ leaderMotor.set(0);
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public static AbsoluteEncoder getEncoder() {
+return leaderMotor.getAbsoluteEncoder();
+
   }
 }

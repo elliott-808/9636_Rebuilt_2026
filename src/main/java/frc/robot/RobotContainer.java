@@ -7,16 +7,11 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AgitatorBackward;
 import frc.robot.commands.AgitatorForward;
-import frc.robot.commands.ClimberDown;
-import frc.robot.commands.ClimberUp;
-import frc.robot.commands.ExtenderBackward;
-import frc.robot.commands.ExtenderForward;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeOut;
 import frc.robot.commands.FarShooterCammand;
 import frc.robot.commands.CloseShooterCommand;
 import frc.robot.subsystems.Agitator;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Extender;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -36,6 +31,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -49,7 +45,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Agitator agitator = new Agitator();
-  private final Climber climber = new Climber();
+  // private final Climber climber = new Climber();
   private final Extender extender = new Extender();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
@@ -97,16 +93,26 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-      operatorPS4.R1().onTrue(new AgitatorForward(agitator));
-      operatorPS4.R2().onTrue(new AgitatorBackward(agitator));
-      operatorPS4.L1().whileTrue(new ExtenderForward(extender));
-      operatorPS4.L2().whileTrue(new ExtenderBackward(extender));
+      operatorPS4.R1().whileTrue(new AgitatorForward(agitator));
+      operatorPS4.R2().whileTrue(new AgitatorBackward(agitator));
+      operatorPS4.L1().whileTrue(extender.extenderForwardCommand().withTimeout(0.25));
+      operatorPS4.L2().whileTrue(extender.extenderBackwardCommand().withTimeout(0.25));
+
+      // operatorPS4.L1().whileTrue(extender.extenderSpeedCommand(() -> -0.1).
+      //   alongWith(Commands.waitSeconds(0.25).
+      //   andThen(extender.extenderSpeedCommand(() -> 0))));
+      // operatorPS4.L2().whileTrue(extender.extenderSpeedCommand(() -> 0.1)
+      // .alongWith(Commands.waitSeconds(0.25).
+      // andThen(extender.extenderSpeedCommand(() -> 0))));
+
+
+
 
       operatorPS4.triangle().onTrue(new IntakeIn(intake));
-      operatorPS4.square().onTrue(new IntakeOut(intake));
-      operatorPS4.circle().onTrue(new FarShooterCammand(shooter));
-      operatorPS4.povDown().onTrue(new CloseShooterCommand(shooter));
-      operatorPS4.povUp().onTrue(new ClimberUp(climber));
+      operatorPS4.circle().onTrue(new IntakeOut(intake));
+      operatorPS4.povDown().whileTrue(shooter.runFarShooterCommand());
+      operatorPS4.povUp().whileTrue(shooter.runCloseShooterCommand());
+      // operatorPS4.povUp().onTrue(new ClimberUp(climber));
 
   }
 

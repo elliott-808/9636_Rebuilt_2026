@@ -67,8 +67,8 @@ leaderMotor.set(0);
     // This method will be called once per scheduler run
   }
 
-  public static AbsoluteEncoder getEncoder() {
-return leaderMotor.getAbsoluteEncoder();
+//   public static AbsoluteEncoder getEncoder() {
+// return leaderMotor.getAbsoluteEncoder();
 
-  }
+//   }
 }

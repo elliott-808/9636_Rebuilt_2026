@@ -19,6 +19,9 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
 import java.io.File;
+
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -57,6 +60,8 @@ public class RobotContainer {
 
   public static final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve"));
+    private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
 
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                                 () -> driverPS4.getLeftY() * -1,
@@ -67,11 +72,19 @@ public class RobotContainer {
                                                             .allianceRelativeControl(true);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+SmartDashboard.putBoolean("Extender UP", true);
+SmartDashboard.putBoolean("Extender DOWN", false);
 
     // Configure the trigger bindings
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
-     
+    //Put the autoChooser on the SmartDashboard
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    NamedCommands.registerCommand("Shoot From Hub", shooter.runCloseShooterCommand().withTimeout(5.0));
+        NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+
+
 
   }
 
@@ -95,9 +108,8 @@ public class RobotContainer {
 
       operatorPS4.R1().whileTrue(new AgitatorForward(agitator));
       operatorPS4.R2().whileTrue(new AgitatorBackward(agitator));
-      operatorPS4.L1().whileTrue(extender.extenderForwardCommand().withTimeout(0.25));
-      operatorPS4.L2().whileTrue(extender.extenderBackwardCommand().withTimeout(0.25));
-
+      operatorPS4.L1().onTrue(extender.extenderForwardCommand().withTimeout(1.25));
+      operatorPS4.L2().onTrue(extender.extenderBackwardCommand().withTimeout(1.25));
       // operatorPS4.L1().whileTrue(extender.extenderSpeedCommand(() -> -0.1).
       //   alongWith(Commands.waitSeconds(0.25).
       //   andThen(extender.extenderSpeedCommand(() -> 0))));
@@ -105,27 +117,22 @@ public class RobotContainer {
       // .alongWith(Commands.waitSeconds(0.25).
       // andThen(extender.extenderSpeedCommand(() -> 0))));
 
-
-
-
-      operatorPS4.triangle().onTrue(new IntakeIn(intake));
-      operatorPS4.circle().onTrue(new IntakeOut(intake));
+      operatorPS4.triangle().whileTrue(new IntakeIn(intake));
+      operatorPS4.circle().whileTrue(new IntakeOut(intake));
       operatorPS4.povDown().whileTrue(shooter.runFarShooterCommand());
       operatorPS4.povUp().whileTrue(shooter.runCloseShooterCommand());
       // operatorPS4.povUp().onTrue(new ClimberUp(climber));
 
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  //public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    //return Autos.exampleAuto(m_exampleSubsystem);
-  //}
   
+public Command getAutonomousCommand()
+  {
+    // Pass in the selected auto from the SmartDashboard as our desired autnomous commmand 
+  //   // An example command will be run in autonomous
+    return drivebase.getAutonomousCommand("Drive and Shooting Auto");
+  // }
+  }
 
     public void setMotorBrake(boolean brake){
     drivebase.setMotorBrake(brake);

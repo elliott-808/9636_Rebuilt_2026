@@ -88,11 +88,11 @@ private PIDController flywheelcontroller = new PIDController(.002, 0, 0);
    * Trigger: Is the flywheel spinning at the required velocity?
    */
   public final Trigger isFlywheelSpinning = new Trigger(
-      () -> isFlywheelAt(1500) || Math.abs(flywheelEncoder.getVelocity()) > 1500
+      () -> isFlywheelAt(2000) || Math.abs(flywheelEncoder.getVelocity()) > 2000
   );
 
   public final Trigger isFlywheelSpinningBackwards = new Trigger(
-      () -> isFlywheelAt(-1500) || flywheelEncoder.getVelocity() < -1500
+      () -> isFlywheelAt(-2000) || flywheelEncoder.getVelocity() < -2000
   );
 
   /** 
@@ -182,15 +182,15 @@ private PIDController flywheelcontroller = new PIDController(.002, 0, 0);
    public Command runCloseShooterCommand() {
     return this.startEnd(
       () -> this.setFlywheelVelocity(Constants.kCloseShootRpm),
-      () -> flywheelMotor.stopMotor()
+      () -> {this.setFlywheelVelocity(0); System.out.println("stop");}
     ).until(isFlywheelSpinning).andThen(
       this.startEnd(
         () -> {
           this.setFlywheelVelocity(Constants.kCloseShootRpm);
           this.setFeederPower(Constants.kFeed);
         }, () -> {
-          flywheelMotor.stopMotor();
-          feederMotor.stopMotor();
+          this.setFlywheelVelocity(0);
+        feederMotor.stopMotor();
         })
     ).withName("Shooting");}
 
@@ -210,7 +210,7 @@ private PIDController flywheelcontroller = new PIDController(.002, 0, 0);
 
     SmartDashboard.putBoolean("Is Flywheel Spinning", isFlywheelSpinning.getAsBoolean());
     SmartDashboard.putBoolean("Is Flywheel Stopped", isFlywheelStopped.getAsBoolean());
-  //  System.out.println("encoder velocity " + flywheelEncoder.getVelocity());
+   System.out.println("encoder velocity " + flywheelEncoder.getVelocity());
 if (flywheelTargetVelocity == 0) {
   flywheelMotor.setVoltage(0);
 }

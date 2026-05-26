@@ -49,11 +49,11 @@ leaderMotor.configure(leaderConfig, com.revrobotics.ResetMode.kResetSafeParamete
   }
 
   public void intakeIn() {
-leaderMotor.set(0.3);
+leaderMotor.set(0.75);
   }
 
   public void intakeOut() {
-leaderMotor.set(-0.3);
+leaderMotor.set(-0.75);
   }
 
   public void intakeStop() {

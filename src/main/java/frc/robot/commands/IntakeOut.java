@@ -30,7 +30,7 @@ public class IntakeOut extends Command {
     public void initialize() {
 
         // This version of "coralIntakeIn" is the actual method within the "CoralSubsystem.java" file.
-        fuelIntakeOut.intakeIn();
+        fuelIntakeOut.intakeOut();
         
     }
 

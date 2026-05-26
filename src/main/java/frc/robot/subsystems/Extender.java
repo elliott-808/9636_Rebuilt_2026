@@ -36,10 +36,15 @@ public class Extender extends SubsystemBase {
 
 public void extenderForward() {
     extendMotor.set(0.1);
+    SmartDashboard.putBoolean("Extender UP", false);
+    SmartDashboard.putBoolean("Extender DOWN", true);
+
 }
 
 public void extenderBackward() {
     extendMotor.set(-0.1);
+    SmartDashboard.putBoolean("Extender UP", true);
+    SmartDashboard.putBoolean("Extender DOWN", false);
 }
 
 public void extenderStop () {
@@ -54,13 +59,15 @@ public void extenderStop () {
 // }
 
 public Command extenderForwardCommand(){
-return this.runOnce(
-    () -> extenderForward());
+return this.startEnd(
+    () -> extenderForward(),
+    () -> extenderStop());
 }
 
 public Command extenderBackwardCommand(){
-return this.runOnce(
-    () -> extenderBackward());
+return this.startEnd(
+    () -> extenderBackward(),
+    () -> extenderStop());
 }
 
 //     private PIDController pidController = new PIDController(

@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -41,9 +42,14 @@ import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import yams.mechanisms.config.SwerveDriveConfig;
+
+import com.studica.frc.AHRS;
+import static edu.wpi.first.units.Units.Degrees;
 
 public class SwerveSubsystem extends SubsystemBase
 {
+  private final AHRS gyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
   /**
    * Swerve drive object.
    */
@@ -64,16 +70,30 @@ public class SwerveSubsystem extends SubsystemBase
                                                                       Meter.of(4)),
                                                     Rotation2d.fromDegrees(180));
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
-    try
-    {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, startingPose);
-      // Alternative method if you don't want to supply the conversion factor via JSON files.
-      // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
-    } catch (Exception e)
-    {
-      throw new RuntimeException(e);
-    }
+            // SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+
+    // try
+    // {
+    //   swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, startingPose);
+    //   // Alternative method if you don't want to supply the conversion factor via JSON files.
+    //   // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
+    // } catch (Exception e)
+    // {
+    //   throw new RuntimeException(e);
+    // }
+    SwerveDriveConfig cfg = new SwerveDriveConfig()
+
+      .withSubsystem(this)
+      .withTelemetry(TelemetryVerbosity.HIGH)
+      // AHRS reports CW+; YAGSL/YAMS expect CCW+, so negate it here instead of relying on
+      // gyroInvert (which is ignored for a "custom" gyro).
+      .withGyro(() -> Degrees.of(-gyro.getAngle()))
+      .withGyroInverted(false);
+
+  swerveDrive = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve/base"))
+      .createSwerveDrive(cfg);
+
+      
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
     swerveDrive.setAngularVelocityCompensation(true,
@@ -83,6 +103,8 @@ public class SwerveSubsystem extends SubsystemBase
                                                 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
     // swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
         setupPathPlanner();
+
+         
 
   }
 
